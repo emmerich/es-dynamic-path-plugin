@@ -1,0 +1,4 @@
+grant
+{
+  permission java.io.FilePermission "/usr/share/elasticsearch/config/-", "read, write";
+};
