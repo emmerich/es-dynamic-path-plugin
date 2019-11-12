@@ -1,4 +1,4 @@
-package org.elasticsearch.action;
+package org.elasticsearch.action.dpp.update;
 
 import org.elasticsearch.action.support.nodes.BaseNodesRequest;
 
@@ -31,6 +31,6 @@ public class DynamicPathUpdateRequest extends BaseNodesRequest<DynamicPathUpdate
   }
 
   public enum Mode {
-    APPEND, REMOVE, NOOP
+    APPEND, REMOVE, CREATE, NOOP
   }
 }

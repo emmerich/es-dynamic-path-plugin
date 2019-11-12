@@ -3,22 +3,18 @@ package org.elasticsearch.plugin.dpp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
-import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.elasticsearch.action.ActionRequest;
 import org.elasticsearch.action.ActionResponse;
-import org.elasticsearch.action.DynamicPathUpdateAction;
-import org.elasticsearch.action.DynamicPathUpdateTransportAction;
-import org.elasticsearch.bootstrap.BootstrapCheck;
-import org.elasticsearch.bootstrap.BootstrapContext;
+import org.elasticsearch.action.dpp.get.DynamicPathGetAction;
+import org.elasticsearch.action.dpp.get.DynamicPathGetTransportAction;
+import org.elasticsearch.action.dpp.update.DynamicPathUpdateAction;
+import org.elasticsearch.action.dpp.update.DynamicPathUpdateTransportAction;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.cluster.ClusterState;
 import org.elasticsearch.cluster.metadata.IndexNameExpressionResolver;
 import org.elasticsearch.cluster.node.DiscoveryNodes;
 import org.elasticsearch.cluster.service.ClusterService;
@@ -34,6 +30,7 @@ import org.elasticsearch.plugins.ActionPlugin;
 import org.elasticsearch.plugins.AnalysisPlugin;
 import org.elasticsearch.plugins.DiscoveryPlugin;
 import org.elasticsearch.plugins.Plugin;
+import org.elasticsearch.rest.DynamicPathGetRestHandler;
 import org.elasticsearch.rest.DynamicPathUpdateRestHandler;
 import org.elasticsearch.rest.RestController;
 import org.elasticsearch.rest.RestHandler;
@@ -76,6 +73,7 @@ public class DynamicPathPlugin extends Plugin implements AnalysisPlugin, ActionP
     List<ActionHandler<? extends ActionRequest, ? extends ActionResponse>> actions = new ArrayList<>();
 
     actions.add(new ActionHandler<>(DynamicPathUpdateAction.INSTANCE, DynamicPathUpdateTransportAction.class));
+    actions.add(new ActionHandler<>(DynamicPathGetAction.INSTANCE, DynamicPathGetTransportAction.class));
 
     return actions;
   }
@@ -85,9 +83,12 @@ public class DynamicPathPlugin extends Plugin implements AnalysisPlugin, ActionP
       ClusterSettings clusterSettings, IndexScopedSettings indexScopedSettings,
       SettingsFilter settingsFilter, IndexNameExpressionResolver indexNameExpressionResolver,
       Supplier<DiscoveryNodes> nodesInCluster) {
-    return Collections.singletonList(
-        new DynamicPathUpdateRestHandler(settings, restController)
-    );
+    List<RestHandler> handlers = new ArrayList<>();
+
+    handlers.add(new DynamicPathUpdateRestHandler(settings, restController));
+    handlers.add(new DynamicPathGetRestHandler(settings, restController));
+
+    return handlers;
   }
 }
 

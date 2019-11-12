@@ -1,8 +1,9 @@
-package org.elasticsearch.action;
+package org.elasticsearch.action.dpp.update;
 
 import java.io.IOException;
+import java.nio.file.FileSystemException;
 import java.util.List;
-import java.util.function.Supplier;
+import org.elasticsearch.action.FailedNodeException;
 import org.elasticsearch.action.support.ActionFilters;
 import org.elasticsearch.action.support.nodes.BaseNodeRequest;
 import org.elasticsearch.action.support.nodes.TransportNodesAction;
@@ -69,12 +70,15 @@ public class DynamicPathUpdateTransportAction extends
         case REMOVE:
           dynamicPathService.removeLine(request.getPath(), request.getLine());
           break;
+        case CREATE:
+          dynamicPathService.createFile(request.getPath(), request.getLine());
+          break;
         case NOOP:
           return new DynamicPathUpdateNodeResponse(clusterService.localNode(), RestStatus.NOT_MODIFIED);
       }
 
       return new DynamicPathUpdateNodeResponse(clusterService.localNode(), RestStatus.OK);
-    } catch (IOException e) {
+    } catch (FileSystemException e) {
       e.printStackTrace();
       return new DynamicPathUpdateNodeResponse(clusterService.localNode(), RestStatus.BAD_REQUEST);
     }

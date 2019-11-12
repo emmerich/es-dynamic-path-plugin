@@ -6,7 +6,7 @@
 
   <groupId>org.shall.elasticsearch</groupId>
   <artifactId>dynamic-path-plugin</artifactId>
-  <version>1.0</version>
+  <version>1.1</version>
 
   <properties>
     <project.build.sourceEncodint>UTF-8</project.build.sourceEncodint>

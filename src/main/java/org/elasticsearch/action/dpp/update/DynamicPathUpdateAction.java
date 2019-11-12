@@ -1,8 +1,10 @@
-package org.elasticsearch.action;
+package org.elasticsearch.action.dpp.update;
 
+import org.elasticsearch.action.Action;
 import org.elasticsearch.client.ElasticsearchClient;
 
-public class DynamicPathUpdateAction extends Action<DynamicPathUpdateRequest, DynamicPathUpdateResponse, DynamicPathUpdateRequestBuilder> {
+public class DynamicPathUpdateAction extends
+    Action<DynamicPathUpdateRequest, DynamicPathUpdateResponse, DynamicPathUpdateRequestBuilder> {
 
   public static final DynamicPathUpdateAction INSTANCE = new DynamicPathUpdateAction();
   public static final String NAME = "cluster:admin/dpp/update";

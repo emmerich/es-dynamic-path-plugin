@@ -1,4 +1,4 @@
-package org.elasticsearch.action;
+package org.elasticsearch.action.dpp.update;
 
 import org.elasticsearch.action.support.nodes.NodesOperationRequestBuilder;
 import org.elasticsearch.client.ElasticsearchClient;

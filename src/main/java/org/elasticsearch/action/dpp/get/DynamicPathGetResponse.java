@@ -1,4 +1,4 @@
-package org.elasticsearch.action;
+package org.elasticsearch.action.dpp.get;
 
 import java.io.IOException;
 import java.util.List;
@@ -12,27 +12,37 @@ import org.elasticsearch.common.xcontent.StatusToXContentObject;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.rest.RestStatus;
 
-public class DynamicPathUpdateResponse extends BaseNodesResponse<DynamicPathUpdateNodeResponse> implements
+public class DynamicPathGetResponse extends BaseNodesResponse<DynamicPathGetNodeResponse> implements
     StatusToXContentObject {
 
-  public DynamicPathUpdateResponse() {}
+  private List<String> lines;
 
-  public DynamicPathUpdateResponse(final ClusterName clusterName, List<DynamicPathUpdateNodeResponse> nodes, List<FailedNodeException> failures) {
+  public DynamicPathGetResponse() {}
+
+  public DynamicPathGetResponse(final ClusterName clusterName, List<DynamicPathGetNodeResponse> nodes, List<FailedNodeException> failures, List<String> lines) {
     super(clusterName, nodes, failures);
+
+    this.lines = lines;
   }
 
   @Override
-  public List<DynamicPathUpdateNodeResponse> readNodesFrom(final StreamInput in) throws IOException {
-    return in.readList(DynamicPathUpdateNodeResponse::readNodeResponse);
+  public List<DynamicPathGetNodeResponse> readNodesFrom(final StreamInput in) throws IOException {
+    return in.readList(DynamicPathGetNodeResponse::readNodeResponse);
   }
 
   @Override
-  public void writeNodesTo(final StreamOutput out, List<DynamicPathUpdateNodeResponse> nodes) throws IOException {
+  public void writeNodesTo(final StreamOutput out, List<DynamicPathGetNodeResponse> nodes) throws IOException {
     out.writeStreamableList(nodes);
   }
 
   @Override
   public XContentBuilder toXContent(XContentBuilder builder, Params params) {
+    try {
+      builder.array("lines", lines.toArray());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
     return builder;
   }
 
@@ -45,7 +55,7 @@ public class DynamicPathUpdateResponse extends BaseNodesResponse<DynamicPathUpda
   public RestStatus status() {
     RestStatus result = RestStatus.OK;
 
-    for (DynamicPathUpdateNodeResponse nodeResponse : getNodes()) {
+    for (DynamicPathGetNodeResponse nodeResponse : getNodes()) {
       if (nodeResponse.getStatus() != RestStatus.OK) {
         result = nodeResponse.getStatus();
         break;
